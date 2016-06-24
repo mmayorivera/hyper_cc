@@ -26,7 +26,7 @@ The script will generate a docker command then send it through ssh connection fo
 coming soon
 
 ## Usage
-[hyper_cc_cmd.sh]: hyper_cc_cmd.png "Hyperlegder UP/DOWN controller"
+![Hyperlegder UP/DOWN controller](hyper_cc_cmd.png)
 ##### Nodes up
 To start 4 nodes with sbi as its prefix.<br />
 Cmd: hyper_start.sh total_number node_prefix
@@ -93,7 +93,7 @@ E.g. Invoking 1,000,000 times to an account A_1, with speed 80 fps.
 $ test_script/.sh A_1 1000000 hash 80
 ```
 
-[check_util.sh]: http://m5-gitlab01.jp.sbibits.com/ssd-blockchain/hyper_cc/raw/7e26e3081af3174a585cf1998814057b7736188c/check_util.png "System status check utility"
+![System status check utility](check_util.png)
 ### System status
 To view the current system status of the logged in node.<br />
 Cmd: test_script/check_util.sh node_name count docker|real [sleep_time]<br />
