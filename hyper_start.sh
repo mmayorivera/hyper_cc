@@ -29,12 +29,13 @@ if [ ! -z "$2" ]
 fi
 
 # Node range
-if [ $total_node -gt 0 ]; then     
+if [ $total_node -gt 0 ]
+     then     
      idx=0
      while [ $idx -lt $total_node ]; do
           #ssh node01.bc.ssd.dev.fu screen -d -m -S HyperNode01 /hyperledger/compose/register_node.sh 0; screen -r Hyper
           printf "Starting.. node0$((idx+1)).bc.ssd.dev.fu:${prefix}${udl}vp${idx} .."
-          ssh node0$((idx+1))${domain} screen -d -m -S ${prefix}${udl}HyperNode0$((idx+1)) $regist_cmd $idx ${prefix}
+          ssh node0$((idx+1))${domain} screen -d -m -S ${prefix}${udl}HyperNode0$((idx+1)) ${regist_cmd} ${idx} ${prefix}
           echo "done!"
           ((idx++))
      done
@@ -43,6 +44,6 @@ if [ $total_node -gt 0 ]; then
 else
      total_node=$((total_node*-1))
      printf "Starting.. node0${total_node}.bc.ssd.dev.fu:${prefix}${udl}vp$((total_node-1)) .."
-     ssh node0${total_node}${domain} screen -d -m -S ${prefix}${udl}HyperNode0${total_node} $regist_cmd $((total_node-1)) ${prefix}
+     ssh node0${total_node}${domain} screen -d -m -S ${prefix}${udl}HyperNode0${total_node} ${regist_cmd} $((total_node-1)) ${prefix}
      echo "done!"
 fi
