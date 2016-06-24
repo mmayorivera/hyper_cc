@@ -42,7 +42,7 @@ fi
 idx=0
 while [ $idx -lt $total ];
   do
-  printf "Trans. ${idx} : "
+  printf "[$(date +"%T")] Trans. ${idx} : "
 
   curl_result=`curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
             "jsonrpc": "2.0",

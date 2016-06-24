@@ -42,7 +42,7 @@ fi
 idx=0
 while [ $idx -lt $total ];
   do
-  printf "Account. ${acc_prefix}_${idx} : "
+  printf "[$(date +"%T")] Account. ${acc_prefix}_${idx} : "
 
   curl_result=`curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
             "jsonrpc": "2.0",
