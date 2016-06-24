@@ -6,6 +6,7 @@
 # Created: 21 June 2016
 # # # # # # # # # # # # # # # # # # # #
 
+debug_level=ERROR
 node_no=$1
 
      if [ -z "$node_no" ]
@@ -26,7 +27,8 @@ fi
 
 cd /hyperledger/compose/configuration
 
-if [ $node_no -eq 0 ]; then
+if [ $node_no -eq 0 ]
+     then
      docker run --rm --name=${prefix}${udl}vp${node_no} \
                     -it \
                     --net=host \
@@ -54,7 +56,7 @@ if [ $node_no -eq 0 ]; then
                     -e CORE_PBFT_GENERAL_TIMEOUT_REQUEST=10s \
                     -e CORE_PBFT_GENERAL_MODE=classic \
                     -e CORE_SECURITY_ENABLED=false \
-                    -e CORE_LOGGING_LEVEL=CRITICAL \
+                    -e CORE_LOGGING_LEVEL=${debug_level} \
                     stylix/hyperledger-peer:pbft peer node start
 else
      docker run --rm --name=${prefix}${udl}vp${node_no} \
@@ -85,6 +87,6 @@ else
                     -e CORE_PBFT_GENERAL_TIMEOUT_REQUEST=10s \
                     -e CORE_PBFT_GENERAL_MODE=classic \
                     -e CORE_SECURITY_ENABLED=false \
-                    -e CORE_LOGGING_LEVEL=CRITICAL \
+                    -e CORE_LOGGING_LEVEL=${debug_level} \
                     stylix/hyperledger-peer:pbft peer node start
 fi
