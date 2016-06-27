@@ -9,30 +9,38 @@
 node_name=$1
 count=$2
 mode=$3
+inet=$4
 sleep_time=0
 
 if [ -z "$node_name" ]
   then
-  echo "Usage $0 node_name count docker|real [sleep_time]"
+  echo "Usage $0 node_name count docker|real network_interrface [sleep_time]"
   echo "Please specify a node_name"
   exit
 fi  
 
 if [ -z "$count" ]
   then
-  echo "Usage $0 node_name count docker|real [sleep_time]"
+  echo "Usage $0 node_name count docker|real network_interrface [sleep_time]"
   echo "Please specify a number of time"
   exit
 fi
 
 if [ -z "$mode" ]
   then
-  echo "Usage $0 node_name count docker|real [sleep_time]"
+  echo "Usage $0 node_name count docker|real network_interrface [sleep_time]"
   echo "Please specify a running mode docker|real"
   exit
 fi
 
-if [ ! -z "$4" ]
+if [ -z "$inet" ]
+  then
+  echo "Usage $0 node_name count docker|real network_interrface [sleep_time]"
+  echo "Please specify a network_interrface"
+  exit
+fi
+
+if [ ! -z "$5" ]
   then
   sleep_time=$4
 fi
@@ -62,7 +70,7 @@ while [ $idx -lt $count ];
     fi
 	
 	disk=`docker exec ${node_name} du -h /var/hyperledger/production/ | tail -1 | cut -f 1`
-	net=`bwm-ng -o csv -T rate -d 1 -c 1 -I eth0 > bwm.log; cat bwm.log | grep eth0 | cut -d ";" -f 3,4 | sed 's/;/\t\t/g'`
+	net=`bwm-ng -o csv -T rate -d 1 -c 1 -I ${inet} > bwm.log; cat bwm.log | grep eth0 | cut -d ";" -f 3,4 | sed 's/;/\t\t/g'`
 	printf "$(date +"%T")\t${block}\t${cpu}\t${mem}\t\t${disk}\t${net}\n"
 
   sleep $sleep_time
