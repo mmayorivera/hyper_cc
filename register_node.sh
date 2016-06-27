@@ -8,28 +8,56 @@
 
 debug_level=ERROR
 node_no=$1
+location=$2
 
-     if [ -z "$node_no" ]
-          then
-          echo "Usage $0 node_no"
-          echo "Please specify a node number"
-          exit
-     fi     
+if [ -z "$node_no" ]
+     then
+     echo "Usage $0 node_no location"
+     echo "Please specify a node number"
+     exit
+fi     
+
+if [ -z "$location" ]
+     then
+     echo "Usage $0 node_no location"
+     echo "Please specify where to launch the command"
+     exit
+fi     
+
+domain=""
+names[0]="NA"
+if [ "$location" == "vm" ]
+     then
+     domain=".bc.ssd.dev.fu"
+     names[0]="node01"
+     names[1]="node02"
+     names[2]="node03"
+     names[3]="node04"
+     names[4]="node05"
+     names[5]="node06"
+elif [ "$location" == "jnx" ]
+     then
+     domain=".tk.japannext.co.jp"     
+     names[0]="dmihadoopstr01"
+     names[1]="dmihadoopstr02"
+     names[2]="dmihadoopctr01"
+     names[3]="dmihadoopctr02"
+fi
 
 # Container name prefix
 prefix=""
 udl=""
-if [ ! -z "$2" ]
+if [ ! -z "$3" ]
      then
-     prefix="$2"
+     prefix="$3"
      udl="_"
 fi
 
 # Consensus
 consensus=""
-if [ ! -z "$3" ]
+if [ ! -z "$4" ]
      then
-     consensus="$3"
+     consensus="$4"
 fi
 
 cd /hyperledger/compose/configuration
@@ -129,7 +157,7 @@ else
                          -e CORE_PEER_VALIDATOR_CONSENSUS_PLUGIN=pbft \
                          -e CORE_PEER_VALIDATOR_CONSENSUS_BUFFERSIZE=7500 \
                          -e CORE_PEER_VALIDATOR_CONSENSUS_EVENTS_BUFFERSIZE=1000 \
-                         -e CORE_PEER_DISCOVERY_ROOTNODE=10.32.85.82:30303\
+                         -e CORE_PEER_DISCOVERY_ROOTNODE=${names[0]}${domain}:30303\
                          -e CORE_PBFT_GENERAL_N=4 \
                          -e CORE_PBFT_GENERAL_K=2 \
                          -e CORE_PBFT_GENERAL_TIMEOUT_REQUEST=10s \
@@ -162,7 +190,7 @@ else
                          -e CORE_PEER_VALIDATOR_CONSENSUS_PLUGIN=noops \
                          -e CORE_PEER_VALIDATOR_CONSENSUS_BUFFERSIZE=7500 \
                          -e CORE_PEER_VALIDATOR_CONSENSUS_EVENTS_BUFFERSIZE=1000 \
-                         -e CORE_PEER_DISCOVERY_ROOTNODE=10.32.85.82:30303\
+                         -e CORE_PEER_DISCOVERY_ROOTNODE=${names[0]}${domain}:30303\
                          -e CORE_NOOPS_BLOCK_SIZE=1 \
                          -e CORE_NOOPS_BLOCK_TIMEOUT=1s \
                          -e CORE_SECURITY_ENABLED=false \
