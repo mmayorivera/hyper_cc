@@ -42,7 +42,7 @@ fi
 
 if [ ! -z "$5" ]
   then
-  sleep_time=$4
+  sleep_time=$5
 fi
 
 BLUE='\033[0;34m'
