@@ -70,7 +70,7 @@ while [ $idx -lt $count ];
     fi
 	
 	disk=`docker exec ${node_name} du -h /var/hyperledger/production/ | tail -1 | cut -f 1`
-	net=`bwm-ng -o csv -T rate -d 1 -c 1 -I ${inet} > bwm.log; cat bwm.log | grep eth0 | cut -d ";" -f 3,4 | sed 's/;/\t\t/g'`
+	net=`bwm-ng -o csv -T rate -d 1 -c 1 -I ${inet} > bwm.log; cat bwm.log | grep ${inet} | cut -d ";" -f 3,4 | sed 's/;/\t\t/g'`
 	printf "$(date +"%T")\t${block}\t${cpu}\t${mem}\t\t${disk}\t${net}\n"
 
   sleep $sleep_time
