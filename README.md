@@ -13,13 +13,18 @@ The script will generate a docker command then send it through ssh connection fo
 - CORE_PEER_SYNC_BLOCKS_CHANNELSIZE=100
 - CORE_PEER_SYNC_STATE_SNAPSHOT_CHANNELSIZE=500
 - CORE_PEER_SYNC_STATE_DELTAS_CHANNELSIZE=200
-- CORE_PEER_VALIDATOR_CONSENSUS_PLUGIN=pbft
 - CORE_PEER_VALIDATOR_CONSENSUS_BUFFERSIZE=7500
 - CORE_PEER_VALIDATOR_CONSENSUS_EVENTS_BUFFERSIZE=1000
+# PBFT
+- CORE_PEER_VALIDATOR_CONSENSUS_PLUGIN=pbft
 - CORE_PBFT_GENERAL_N=4
 - CORE_PBFT_GENERAL_K=2
 - CORE_PBFT_GENERAL_TIMEOUT_REQUEST=10s
 - CORE_PBFT_GENERAL_MODE=classic
+#NOOPS
+- CORE_PEER_VALIDATOR_CONSENSUS_PLUGIN=noops
+- CORE_NOOPS_BLOCK_SIZE=1 \
+- CORE_NOOPS_BLOCK_TIMEOUT=1s \
 - CORE_SECURITY_ENABLED=false
   
 ## Diagram
@@ -38,6 +43,20 @@ To start only the 2nd node.<br />
 Cmd: hyper_start.sh -specific_node_index node_prefix
 ```sh
 $ hyper_start.sh -2 sbi
+```
+
+##### Nodes up (with specify PBFT consensus)
+To start 6 nodes with PBFT.<br />
+Cmd: hyper_start.sh -specific_node_index node_prefix consensus_mode
+```sh
+$ hyper_start.sh 6 sbi pbft
+```
+
+##### Nodes up (with specify NOOPS consensus)
+To start 3 nodes with NOOPS.<br />
+Cmd: hyper_start.sh -specific_node_index node_prefix consensus_mode
+```sh
+$ hyper_start.sh 3 sbi noops
 ```
 
 ##### Nodes down
