@@ -37,13 +37,27 @@ if [ "$location" == "vm" ]
      names[3]="node04"
      names[4]="node05"
      names[5]="node06"
+     names[6]="node07"
+     names[7]="node08"
+     names[8]="node09"
+     names[9]="node10"
+     names[10]="node11"
+     names[11]="node12"
+     names[12]="node13"
+     names[13]="node14"
+     names[14]="node15"
+     names[15]="node16"
+     names[16]="node17"
+     names[17]="node18"
+     names[18]="node19"
+     names[19]="node20"
 elif [ "$location" == "jnx" ]
      then
-     domain=".tk.japannext.co.jp"     
-     names[0]="dmihadoopstr01"
-     names[1]="dmihadoopstr02"
-     names[2]="dmihadoopctr01"
-     names[3]="dmihadoopctr02"
+     domain=".tk.japannext.co.jp"    
+     names[0]="dmihadoopctr01"
+     names[1]="dmihadoopctr02" 
+     names[2]="dmihadoopstr01"
+     names[3]="dmihadoopstr02"
 fi
 
 # Container name prefix
