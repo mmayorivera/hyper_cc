@@ -6,24 +6,37 @@
 # Created: 21 June 2016
 # # # # # # # # # # # # # # # # # # # #
 
-total_node=$1
-location=$2
+regist_cmd="/hyperledger/hyper_cc/register_node.sh"
 
-if [ -z "$total_node" ]
-     then
-     echo "Usage $0 total_node"
-     echo "Please specify the total number of node"
+function display_usage {
+     echo -e "Usage"
+     echo -e "   $0 location stop_pattern prefix"
+     echo -e "Parameters:"
+     echo -e "   location        Running node on either \"vm\", \"jnx\", or \"dev\"."
+     echo -e "   stop_pattern    The pattern [d-p-l] of stopping node."
+     echo -e "        d  --      Stop type pattern [p] or specific [s]."
+     echo -e "        p  --      Number of physical host to be stopped."
+     echo -e "        l  --      Number of logical node to be stopped."
+     echo -e "                   e.g. p-4-4  Stop 16 nodes on 4 hosts with 4 nodes each."
+     echo -e "                        p-4-2  Stop 8 nodes on 4 hosts with 2 nodes each."
+     echo -e "                        s-9-3  Stop a specific 3rd node on the 9th host."
+     echo -e "                        s-2-1  Stop a specific 1st node on the 2nd host."
+     echo -e "   prefix          Node prefix."
      exit
-fi     
+}
+
+############## Parameters ##############
+location=$1
+stop_pattern=$2
+############## Optional ##############
+prefix=$3 
+
 
 if [ -z "$location" ]
      then
-     echo "Usage $0 total_node location [node_prefix] [consensus_mode]"
-     echo "Please specify where to launch the command"
-     exit
-fi  
-
-cd /hyperledger/compose/configuration
+     echo "Please specify where to launch the command either \"vm\", \"jnx\", or \"dev\"."
+     display_usage
+fi
 
 # Domain name configuration
 domain=""
@@ -58,35 +71,77 @@ elif [ "$location" == "jnx" ]
      names[1]="dmihadoopctr02" 
      names[2]="dmihadoopstr01"
      names[3]="dmihadoopstr02"
+elif [ "$location" == "dev" ]
+     then
+     domain=".bc.ssd.dev.fu"    
+     names[0]="dev01"
+     names[1]="dev02"
+else
+     echo "Invalid location value."
+     exit
+fi
+
+if [ -z "$stop_pattern" ]
+     then
+     echo "Please specify the stop pattern as d-p-l"
+     display_usage
+fi 
+
+# Extract stop pattern
+stop_pattern_array=(${stop_pattern//-/ })
+stop_type=${stop_pattern_array[0]}    # d - Stop type
+total_pnode=${stop_pattern_array[1]}  # p - Total physical node
+total_lnode=${stop_pattern_array[2]}  # l - Total logical node
+if [ -z "$stop_type" ] || [ -z "$total_pnode" ] || [ -z "$total_lnode" ]
+     then
+     echo "Incorrectly specify a stop pattern."
+     echo "Please specify the stop pattern as d-p-l."
+     display_usage
 fi
 
 # Container name prefix
-prefix=""
 udl=""
-if [ ! -z "$3" ]
+if [ ! -z "$prefix" ]
      then
-     prefix="$3"
      udl="_"
 fi
 
-# Node range
-if [ $total_node -gt 0 ]; then
-	idx=0
-	while [ $idx -lt $total_node ]; do
-	     #ssh node01.bc.ssd.dev.fu docker stop prefix_vp0
-	     printf "Stopping.. ${names[idx]}${domain}:.."
-	     ssh ${names[idx]}${domain} docker stop ${prefix}${udl}vp${idx}
-	     printf "Removing.. ${names[idx]}${domain}:.."
-	     ssh ${names[idx]}${domain} docker rm ${prefix}${udl}vp${idx}
-	     ((idx++))
-	done
+# Stopping all nodes
+if [ "$stop_type" == "p" ]
+     then
+     pidx=0    # Physical node index
 
-# Specific node
-else
-     total_node=$((total_node*-1))
-     printf "Stopping.. ${names[total_node-1]}${domain}:.."
-     ssh ${names[total_node-1]}${domain} docker stop ${prefix}${udl}vp$((total_node-1))
-     printf "Removing.. ${names[total_node-1]}${domain}:.."
-     ssh ${names[total_node-1]}${domain} docker rm ${prefix}${udl}vp$((total_node-1))
+     # Physical host runner
+     while [[ $pidx -lt $total_pnode ]]; do
+          lidx="0"    # Logical node index
+
+     	while [[ $lidx -lt $total_lnode ]]; do
+     	     #ssh node01.bc.ssd.dev.fu docker stop prefix_vp0
+     	     printf "Stopping.. ${names[pidx]}${domain}:.."
+     	     ssh ${names[pidx]}${domain} docker stop ${prefix}${udl}vp${pidx}${lidx}
+     	     printf "Removing.. ${names[pidx]}${domain}:.."
+     	     ssh ${names[pidx]}${domain} docker rm ${prefix}${udl}vp${pidx}${lidx}
+     	     
+               # Next logical node
+               ((lidx++))
+     	done
+
+          # Next host
+          ((pidx++))
+     done
+
+# Stopping specific node
+elif [ "$stop_type" == "s" ]
+     then
+     pidx=$((total_pnode-1))
+     lidx=$((total_vnode-1))
+
+     printf "Stopping.. ${names[pidx]}${domain}:.."
+     ssh ${names[total_node-1]}${domain} docker stop ${prefix}${udl}vp${pidx}${lidx}
+     printf "Removing.. ${names[pidx]}${domain}:.."
+     ssh ${names[total_node-1]}${domain} docker rm ${prefix}${udl}vp${pidx}${lidx}
      echo "done!"
+else
+     echo "Invalid deploy type."
+     exit
 fi
