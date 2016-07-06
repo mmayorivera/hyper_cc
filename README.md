@@ -28,9 +28,10 @@ The script will generate a docker command then send it through ssh connection fo
 - CORE_NOOPS_BLOCK_SIZE=1
 - CORE_NOOPS_BLOCK_TIMEOUT=1s
 - CORE_SECURITY_ENABLED=false
-  
+
+ 
 ## Diagram
-coming soon
+![Hyperlegder network created with a simple hyper_cc command](hyper_cc_network.png)
 
 ## Usage
 ![Hyperlegder UP/DOWN controller](hyper_cc_cmd.png)
