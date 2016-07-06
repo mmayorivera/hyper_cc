@@ -64,6 +64,6 @@ while [ $idx -lt $total ];
   status=`echo ${message##*|} | cut -d ":" -f 2`
   printf "${GREEN}${status}${NC}\n"
 
-  usleep $usleep_time
+  #usleep $usleep_time
   ((idx++))
 done
