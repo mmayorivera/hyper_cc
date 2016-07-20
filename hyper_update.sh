@@ -122,9 +122,8 @@ if [ ! -z "$prefix" ]
 fi
 
 
-
 # Updating all nodes
-if [ "$stop_type" == "p" ]
+if [ "$update_type" == "p" ]
      then
      pidx=0    # Physical node index
 
@@ -206,7 +205,7 @@ if [ "$stop_type" == "p" ]
      done
 
 # Updating specific host
-elif [ "$stop_type" == "s" ]
+elif [ "$update_type" == "s" ]
      then
      pidx=$((total_pnode-1))
      # Stop val
