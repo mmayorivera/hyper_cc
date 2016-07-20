@@ -10,6 +10,7 @@ node_name=$1
 count=$2
 mode=$3
 inet=$4
+port=$5
 sleep_time=0
 
 if [ -z "$node_name" ]
@@ -40,9 +41,15 @@ if [ -z "$inet" ]
   exit
 fi
 
-if [ ! -z "$5" ]
+if [ -z "$port" ]
   then
-  sleep_time=$5
+  echo "Please specify a listening REST port."
+  exit
+fi
+
+if [ ! -z "$6" ]
+  then
+  sleep_time=$6
 fi
 
 BLUE='\033[0;34m'
@@ -53,9 +60,9 @@ NC='\033[0m' # No Color
 echo -e "${BLUE}Time\t\tBlock\tCPU (%)\tMem (KB)\tDisk\tNet-in (byte)\tNet-out (byte)${NC}"
 
 idx=0
-while [ $idx -lt $count ];
+while [[ $idx -lt $count ]];
   do
-    block=`/hyperledger/hyper_cc/test_script/get_block_height.sh`
+    block=`/hyperledger/hyper_cc/test_script/get_block_height.sh ${port}`
 
     # Dedicated node mode
     if [ "$mode" == "real" ]

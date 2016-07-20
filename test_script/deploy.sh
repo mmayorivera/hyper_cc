@@ -7,12 +7,19 @@
 # # # # # # # # # # # # # #
 
 mode=$1
-acc_hash=$2
+port=$2
+acc_hash=$3
 
 if [ -z "$mode" ]
   then
-  echo "Usage $0 [acc|opt acc_hash]"
+  echo "Usage $0 acc|opt rest_port [acc_hash]"
   echo "Please specify a deploying [acc|opt acc_hash]"
+  exit
+fi
+
+if [ -z "$port" ]
+  then
+  echo "Please specify a targeting REST port."
   exit
 fi
 
@@ -39,7 +46,7 @@ if [ "$mode" == "acc" ]; then
 			},
 			"id": 0
 			}
-			' 'http://127.0.0.1:5000/chaincode'`
+			' 'http://127.0.0.1:'${port}'/chaincode'`
 	message=`echo ${curl_result} | sed 's/\\\\\//\//g' | sed 's/[{}]//g' | awk -v k="text" '{n=split($0,a,","); for (i=1; i<=n; i++) print a[i]}' | sed 's/\"\:\"/\|/g' | sed 's/[\,]/ /g' | sed 's/\"//g' | grep -w message`
     chainhash=`echo ${message##*|} | cut -d ":" -f 2`
 
@@ -70,7 +77,7 @@ else
 			  },
 			  "id": 0
 			}
-			' 'http://127.0.0.1:5000/chaincode'`
+			' 'http://127.0.0.1:'${port}'/chaincode'`
 	message=`echo ${curl_result} | sed 's/\\\\\//\//g' | sed 's/[{}]//g' | awk -v k="text" '{n=split($0,a,","); for (i=1; i<=n; i++) print a[i]}' | sed 's/\"\:\"/\|/g' | sed 's/[\,]/ /g' | sed 's/\"//g' | grep -w message`
     chainhash=`echo ${message##*|} | cut -d ":" -f 2`
 

@@ -32,6 +32,13 @@ total=$2
 chainhash=$3
 fps=$4
 usleep_time=0
+port=$5
+
+if [ -z "$port" ]
+  then
+  echo "Please specify a targeting REST port."
+  exit
+fi
 
 # Calculate sleep time
 if [ ! -z "$fps" ]
@@ -59,7 +66,7 @@ while [ $idx -lt $total ];
             },
             "id": 0
           }
-          ' 'http://127.0.0.1:5000/chaincode'`
+          ' 'http://127.0.0.1:'${port}'/chaincode'`
   message=`echo ${curl_result} | sed 's/\\\\\//\//g' | sed 's/[{}]//g' | awk -v k="text" '{n=split($0,a,","); for (i=1; i<=n; i++) print a[i]}' | sed 's/\"\:\"/\|/g' | sed 's/[\,]/ /g' | sed 's/\"//g' | grep -w status`
   status=`echo ${message##*|} | cut -d ":" -f 2`
   printf "${GREEN}${status}${NC}\n"
